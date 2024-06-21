@@ -1,7 +1,6 @@
 import { isDate, isPlainObject } from "@/axios/helpers/utils";
 
 function encode(val: string): string {
-  val = val.replaceAll(" ", ""); //替换空格为空字符
   return encodeURIComponent(val)
     .replace(/%24/gi, "$")
     .replace(/%3A/gi, ":")

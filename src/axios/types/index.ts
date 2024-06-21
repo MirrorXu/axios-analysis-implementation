@@ -4,13 +4,14 @@ export type Method = "get" | "post" | "put" | "patch" | "delete";
  * axios 请求参数对象
  */
 export interface AxiosRequestConfig {
-  url: string;
+  url?: string;
   method?: Method;
   data?: any;
   params?: any;
   headers?: any;
   responseType?: XMLHttpRequestResponseType;
   timeout?: number; //超时时间  毫秒
+  [propName: string]: any;
 }
 
 /**
@@ -27,7 +28,7 @@ export interface AxiosResponse<T = any> {
 
 // todo 两种写法
 // export interface AxiosPromise extends Promise<AxiosResponse> { }
-export type AxiosPromise<T> = Promise<AxiosResponse<T>>;
+export type AxiosPromise<T = any> = Promise<AxiosResponse<T>>;
 
 /**
  * Axios 错误对象接口
@@ -42,8 +43,16 @@ export interface AxiosError extends Error {
 }
 
 export interface Axios {
+  defaults: AxiosRequestConfig;
+  interceptors: {
+    request: AxiosInterceptorManager<AxiosRequestConfig>;
+    response: AxiosInterceptorManager<AxiosResponse>;
+  };
   request<T = any>(config: AxiosRequestConfig): AxiosPromise<T>;
-  get<T = any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T>;
+  get<T = any>(
+    url: string | AxiosRequestConfig,
+    config?: AxiosRequestConfig
+  ): AxiosPromise<T>;
   delete<T = any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T>;
   head<T = any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T>;
   options<T = any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T>;
@@ -64,7 +73,23 @@ export interface Axios {
   ): AxiosPromise<T>;
 }
 
+/**
+ * axios的类型
+ */
 export interface AxiosInstance extends Axios {
   <T = any>(config: AxiosRequestConfig): AxiosPromise<T>;
   <T = any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T>;
+}
+
+export interface AxiosInterceptorManager<T> {
+  use(resolved: ResolvedFn<T>, rejected?: RejectedFn | undefined): number;
+  eject(id: number): void;
+}
+
+export interface ResolvedFn<T> {
+  (val: T): T | Promise<T>;
+}
+
+export interface RejectedFn {
+  (err: any): any;
 }

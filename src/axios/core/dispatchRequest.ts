@@ -1,5 +1,5 @@
 import { AxiosPromise, AxiosRequestConfig, AxiosResponse } from "@/axios/types";
-import xhr from "@/axios/xhr";
+import xhr from "@/axios/core/xhr";
 import { buildURL } from "@/axios/helpers/url";
 import { transformRequest, transformResponse } from "@/axios/helpers/data";
 import { processHeaders } from "@/axios/helpers/headers";
@@ -14,7 +14,7 @@ function processConfig(config: AxiosRequestConfig) {
 // 处理url ， get请求的 params对象拼接到url上
 function transformURL(config: AxiosRequestConfig): string {
   const { url, params } = config;
-  const retUrl = buildURL(url, params);
+  const retUrl = buildURL(url as string, params);
   return retUrl;
 }
 

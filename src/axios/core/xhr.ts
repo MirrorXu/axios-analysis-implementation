@@ -1,6 +1,7 @@
 import { AxiosPromise, AxiosRequestConfig, AxiosResponse } from "@/axios/types";
 import { parseHeaders } from "@/axios/helpers/headers";
 import { createError } from "@/axios/helpers/error";
+import chalk from "chalk";
 
 export default function xhr<T = any>(
   config: AxiosRequestConfig
@@ -26,7 +27,7 @@ export default function xhr<T = any>(
       request.timeout = timeout;
     }
 
-    request.open(method.toUpperCase(), url, true);
+    request.open(method.toUpperCase(), url!, true);
 
     // 服务端成功响应
     request.onreadystatechange = function handleReadyStateChange() {
@@ -61,7 +62,15 @@ export default function xhr<T = any>(
       if (response.status >= 200 && response.status < 300) {
         resolve(response);
       } else {
-        reject(new Error("异步请求失败，status：" + response.status));
+        reject(
+          createError(
+            `异步请求失败，status：${response.status}`,
+            config,
+            null,
+            request,
+            response
+          )
+        );
       }
     };
 
@@ -83,7 +92,7 @@ export default function xhr<T = any>(
     Object.keys(headers).forEach((name) => {
       request.setRequestHeader(name, headers[name]);
     });
-
+    console.log(chalk.red("### xhr send:"), data, typeof data);
     request.send(data);
   });
 }
