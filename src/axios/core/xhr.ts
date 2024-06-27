@@ -31,10 +31,10 @@ export default function xhr<T = any>(
 
     // 服务端成功响应
     request.onreadystatechange = function handleReadyStateChange() {
-      console.log(
-        "handleReadyStateChange:",
-        ` request.readyState:${request.readyState} ,  request.status:${request.status} `
-      );
+      // console.log(
+      //   "handleReadyStateChange:",
+      //   ` request.readyState:${request.readyState} ,  request.status:${request.status} `
+      // );
 
       if (request.readyState !== 4) return;
 
@@ -89,10 +89,11 @@ export default function xhr<T = any>(
       reject(error);
     };
 
+    console.log("### request.setRequestHeader(key , value):", headers);
     Object.keys(headers).forEach((name) => {
       request.setRequestHeader(name, headers[name]);
     });
-    console.log(chalk.red("### xhr send:"), data, typeof data);
+    console.log(chalk.red("### xhr.send( data ) :"), data);
     request.send(data);
   });
 }

@@ -35,7 +35,7 @@ export default class Axios {
     } else {
       config = url;
     }
-
+    // 合并配置
     config = mergeConfig(this.defaults, config);
 
     const chain: Array<PromiseChain<any>> = [
@@ -63,15 +63,15 @@ export default class Axios {
     url: string | AxiosRequestConfig,
     config?: AxiosRequestConfig
   ): AxiosPromise<T> {
-    config = Object.assign(config || {}, { methods: "get", url });
+    config = Object.assign(config || {}, { method: "get", url });
     return this.request(config);
   }
   delete<T = any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T> {
-    config = Object.assign(config || {}, { methods: "delete", url });
+    config = Object.assign(config || {}, { method: "delete", url });
     return this.request(config);
   }
   head<T = any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T> {
-    config = Object.assign(config || {}, { methods: "head", url });
+    config = Object.assign(config || {}, { method: "head", url });
     return this.request(config);
   }
   post<T = any>(
@@ -79,7 +79,7 @@ export default class Axios {
     data?: any,
     config?: AxiosRequestConfig
   ): AxiosPromise<T> {
-    config = Object.assign(config || {}, { methods: "post", url, data });
+    config = Object.assign(config || {}, { method: "post", url, data });
     return this.request(config);
   }
   put<T = any>(
@@ -87,7 +87,7 @@ export default class Axios {
     data?: any,
     config?: AxiosRequestConfig
   ): AxiosPromise<T> {
-    config = Object.assign(config || {}, { methods: "put", url, data });
+    config = Object.assign(config || {}, { method: "put", url, data });
     return this.request(config);
   }
   patch<T = any>(
@@ -95,7 +95,7 @@ export default class Axios {
     data?: any,
     config?: AxiosRequestConfig
   ): AxiosPromise<T> {
-    config = Object.assign(config || {}, { methods: "patch", url, data });
+    config = Object.assign(config || {}, { method: "patch", url, data });
     return this.request(config);
   }
 }

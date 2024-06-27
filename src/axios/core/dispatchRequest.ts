@@ -1,14 +1,17 @@
 import { AxiosPromise, AxiosRequestConfig, AxiosResponse } from "@/axios/types";
 import xhr from "@/axios/core/xhr";
 import { buildURL } from "@/axios/helpers/url";
-import { transformRequest, transformResponse } from "@/axios/helpers/data";
-import { processHeaders } from "@/axios/helpers/headers";
-
+import { flattenHeaders } from "@/axios/helpers/headers";
+import transform from "@/axios/core/transform";
+import stLog from "@/axios/helpers/utils";
 // 处理请求配置选项
 function processConfig(config: AxiosRequestConfig) {
   config.url = transformURL(config);
-  config.headers = transformHeaders(config);
-  config.data = transformRequestData(config);
+  // config.headers = transformHeaders(config);
+  // config.data = transformRequestData(config);
+  config.data = transform(config.data, config.headers, config.transformRequest);
+  config.headers = flattenHeaders(config.headers, config.method!);
+  stLog("processConfig", config);
 }
 
 // 处理url ， get请求的 params对象拼接到url上
@@ -18,27 +21,20 @@ function transformURL(config: AxiosRequestConfig): string {
   return retUrl;
 }
 
-function transformRequestData(config: AxiosRequestConfig): any {
-  return transformRequest(config.data);
-}
-
-function transformHeaders(config: AxiosRequestConfig): any {
-  const { headers = {}, data } = config;
-  processHeaders(headers, data);
-  return headers;
-}
-
-function transformResponseData(response: AxiosResponse) {
-  response.data = transformResponse(response.data);
+function transformResponseData(response: AxiosResponse): any {
+  response.data = transform(
+    response.data,
+    response.config,
+    response.config.transformResponse
+  );
   return response;
 }
-
 export default function dispatchRequest<T = any>(
   config: AxiosRequestConfig
 ): AxiosPromise<T> {
   processConfig(config);
   return xhr(config).then((response) => {
-    transformResponseData(response);
+    response = transformResponseData(response);
     return response;
   });
 }

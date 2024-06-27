@@ -1,16 +1,31 @@
 import { AxiosRequestConfig } from "@/axios/types";
-
+import { processHeaders } from "@/axios/helpers/headers";
+import { transformRequest } from "@/axios/helpers/data";
+import { transformResponse } from "@/axios/helpers/data";
 export const defaultsRequestConfig: AxiosRequestConfig = {
   method: "get",
   timeout: 0,
   headers: {
     common: {
-      Accept: "application/json, text/plain, */*",
+      accept: "application/json, text/plain, */*",
     },
   },
+  transformRequest: [
+    function transRequest(data, headers) {
+      processHeaders(headers, data);
+      data = transformRequest(data);
+      return data;
+    },
+  ],
+  transformResponse: [
+    function transResponse(data) {
+      data = transformResponse(data);
+      return data;
+    },
+  ],
 };
 
-const methodsData = ["delete", "get", "heed", "options"];
+const methodsData = ["delete", "get", "head", "options"];
 
 methodsData.forEach((method) => {
   defaultsRequestConfig.headers[method] = {};
@@ -20,6 +35,6 @@ const methodsWithData = ["post", "put", "patch"];
 
 methodsWithData.forEach((method) => {
   defaultsRequestConfig.headers[method] = {
-    "Content-Type": "application/x-www-form-urlencoded",
+    "content-type": "application/x-www-form-urlencoded",
   };
 });

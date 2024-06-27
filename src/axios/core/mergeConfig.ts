@@ -1,15 +1,14 @@
 import { AxiosRequestConfig } from "@/axios/types";
 import { isPlainObject } from "@/axios/helpers/utils";
 import { deepMerge } from "@/axios/helpers/utils";
-
-const strats = Object.create(null);
+import stLog from "@/axios/helpers/utils";
 
 function defaultStrat(val1: any, val2: any) {
-  return typeof val2 !== undefined ? val2 : val1;
+  return typeof val2 !== "undefined" ? val2 : val1;
 }
 
 function fromVal2Strat(val1: any, val2: any) {
-  if (typeof val2 !== undefined) {
+  if (typeof val2 !== "undefined") {
     return val2;
   }
 }
@@ -25,19 +24,30 @@ function deepMergeStrat(val1: any, val2: any) {
     return val1;
   }
 }
-const stratKeysDeepMerge = ["headers"];
-stratKeysDeepMerge.forEach((key) => {
-  strats[key] = deepMerge;
-});
-const stratKeysFromVal2 = ["url", "params", "data"];
-stratKeysFromVal2.forEach((key) => {
-  strats[key] = fromVal2Strat;
-});
+
+// const stratKeysDeepMerge = ["headers"];
+// stratKeysDeepMerge.forEach((key) => {
+//   strats[key] = deepMerge;
+// });
+// const stratKeysFromVal2 = ["url", "params", "data"];
+// stratKeysFromVal2.forEach((key) => {
+//   strats[key] = fromVal2Strat;
+// });
+
+// 不同字段的合并策略
+let strats = Object.create(null);
+strats = {
+  headers: deepMergeStrat,
+  url: fromVal2Strat,
+  params: fromVal2Strat,
+  data: fromVal2Strat,
+};
 
 export default function mergeConfig(
   config1: AxiosRequestConfig,
   config2?: AxiosRequestConfig
 ): AxiosRequestConfig {
+  stLog("mergeConfig", config1, config2);
   if (!config2) config2 = {};
 
   const config = Object.create(null);

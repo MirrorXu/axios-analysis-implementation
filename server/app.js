@@ -18,13 +18,6 @@ app.get("/user", (req, res) => {
 });
 app.post("/login", (req, res) => {
   console.log(chalk.red("### req.body:"), req.body);
-  // Object.keys(req.headers).forEach((key) => {
-  //   console.log(
-  //     chalk.red(key),
-  //     chalk.blue(":"),
-  //     chalk.yellow(req.headers[key])
-  //   );
-  // });
   const body = req.body || {};
   res.send({
     msg: "success",

@@ -1,5 +1,8 @@
 export type Method = "get" | "post" | "put" | "patch" | "delete";
 
+export interface AxiosTransFormer {
+  (data: any, headers?: any): any;
+}
 /**
  * axios 请求参数对象
  */
@@ -11,6 +14,8 @@ export interface AxiosRequestConfig {
   headers?: any;
   responseType?: XMLHttpRequestResponseType;
   timeout?: number; //超时时间  毫秒
+  transformRequest?: AxiosTransFormer | AxiosTransFormer[];
+  transformResponse?: AxiosTransFormer | AxiosTransFormer[];
   [propName: string]: any;
 }
 
@@ -79,6 +84,10 @@ export interface Axios {
 export interface AxiosInstance extends Axios {
   <T = any>(config: AxiosRequestConfig): AxiosPromise<T>;
   <T = any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T>;
+}
+
+export interface AxiosStatic extends AxiosInstance {
+  create(config: AxiosRequestConfig): AxiosInstance;
 }
 
 export interface AxiosInterceptorManager<T> {
