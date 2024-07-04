@@ -1,5 +1,5 @@
-import "./cancel";
-import axios, { AxiosInstance, AxiosTransFormer } from "@/axios/axios";
+import axios from "@/axios/index";
+import { AxiosInstance, AxiosTransFormer } from "@/axios/types";
 import { isPlainObject } from "@/axios/helpers/utils";
 import qs from "qs";
 
@@ -14,11 +14,11 @@ const request: AxiosInstance = axios.create({
     token: 'by axios.create({token:"xxx"})',
   },
   transformRequest: [
-    function (data, headers) {
-      data._tag = Date.now();
+    function setTimeStamp(data, headers) {
+      if (data) data._timeStamp = Date.now();
       return data;
     },
-    function (data, headers) {
+    function stringifyData(data, headers) {
       if (data) {
         data = qs.stringify(data);
       }
@@ -46,7 +46,9 @@ request.interceptors.request.use((config) => {
 let _counter = 0;
 request.interceptors.response.use((response) => {
   // console.log(response);
-  response.data._responseInterceptorTag = ++_counter;
+  if (response && response.data && isPlainObject(response.data as any)) {
+    response.data._responseInterceptorTag = ++_counter;
+  }
   return response;
 }, undefined);
 

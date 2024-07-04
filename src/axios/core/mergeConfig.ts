@@ -1,7 +1,7 @@
 import { AxiosRequestConfig } from "@/axios/types";
 import { isPlainObject } from "@/axios/helpers/utils";
 import { deepMerge } from "@/axios/helpers/utils";
-import stLog from "@/axios/helpers/utils";
+import { stLog } from "@/axios/helpers/utils";
 
 function defaultStrat(val1: any, val2: any) {
   return typeof val2 !== "undefined" ? val2 : val1;

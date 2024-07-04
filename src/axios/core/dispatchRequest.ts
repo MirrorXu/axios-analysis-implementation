@@ -3,7 +3,7 @@ import xhr from "@/axios/core/xhr";
 import { buildURL } from "@/axios/helpers/url";
 import { flattenHeaders } from "@/axios/helpers/headers";
 import transform from "@/axios/core/transform";
-import stLog from "@/axios/helpers/utils";
+import { stLog } from "@/axios/helpers/utils";
 // 处理请求配置选项
 function processConfig(config: AxiosRequestConfig) {
   config.url = transformURL(config);
@@ -24,7 +24,7 @@ function transformURL(config: AxiosRequestConfig): string {
 function transformResponseData(response: AxiosResponse): any {
   response.data = transform(
     response.data,
-    response.config,
+    response.config.headers,
     response.config.transformResponse
   );
   return response;
@@ -32,9 +32,16 @@ function transformResponseData(response: AxiosResponse): any {
 export default function dispatchRequest<T = any>(
   config: AxiosRequestConfig
 ): AxiosPromise<T> {
+  throwIfCancellationRequested(config);
   processConfig(config);
   return xhr(config).then((response) => {
     response = transformResponseData(response);
     return response;
   });
+}
+
+function throwIfCancellationRequested(config: AxiosRequestConfig) {
+  if (config.cancelToken) {
+    config.cancelToken.throwIfRequested();
+  }
 }

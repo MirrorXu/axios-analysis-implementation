@@ -1,4 +1,4 @@
-import axios from "@/axios/index";
+import axios from "@/axios/core/Axios";
 
 export default axios;
 

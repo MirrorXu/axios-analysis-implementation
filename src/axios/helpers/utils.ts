@@ -1,6 +1,3 @@
-import { AxiosRequestConfig } from "@/axios/types";
-import any = jasmine.any;
-
 const _toString = Object.prototype.toString;
 
 export function isDate(val: any): val is Date {
@@ -48,18 +45,86 @@ export function deepMerge(...objs: any[]): any {
   return result;
 }
 
-interface LogInfo {
-  title?: string;
-  [key: string]: any;
+// interface LogFn {
+//   (title: string, args: any[]): void;
+// }
+// interface ILog extends LogFn {
+//   info: LogFn;
+//   warn: LogFn;
+//   success: LogFn;
+//   error: LogFn;
+// }
+//
+// const myLog = {
+//   info(title: string, ...args: any[]): void {
+//     const textStyle = "color: rgb(0, 0, 255);font-weight:bold; ";
+//     console.log(`%c >>> ${title}: `, textStyle, ...args);
+//   },
+//   warn(title: string, ...args: any[]): void {
+//     const textStyle = "color: rgb(255, 255, 0);font-weight:bold; ";
+//     console.log(`%c >>> ${title}: `, textStyle, ...args);
+//   },
+//   success(title: string, ...args: any[]): void {
+//     const textStyle = "color: rgb(0, 255, 0);font-weight:bold; ";
+//     console.log(`%c >>> ${title}: `, textStyle, ...args);
+//   },
+//   error(title: string, ...args: any[]): void {
+//     const textStyle = "color: rgb(255, 0, 0);font-weight:bold; ";
+//     console.log(`%c >>> ${title}: `, textStyle, ...args);
+//   },
+// };
+// function createLog(): ILog {
+//   const log = (title: string, ...args: any[]) => {
+//     myLog.info(title, ...args);
+//   };
+//   for (const key in myLog) {
+//     log[key] = myLog[key];
+//   }
+//   return log as ILog;
+// }
+//
+// export const stLog: ILog = createLog();
+
+interface LogFn {
+  (title: string, ...args: any[]): void;
 }
 
-export default function stLog(...args: any[]): void {
-  const info: LogInfo = Object.create(null);
-
-  if (args && typeof args[0] === "string") {
-    info.title = args[0];
-    console.log(`### ${info.title}:`, ...[...args.slice(1)]);
-  } else {
-    console.log(...args);
-  }
+interface ILog extends LogFn {
+  info: LogFn;
+  warn: LogFn;
+  success: LogFn;
+  error: LogFn;
 }
+
+const Logs = {
+  info(title: string, ...args: any[]): void {
+    const textStyle = "color: #03AED2;font-weight:bold;";
+    console.log(`%c >>> ${title}: `, textStyle, ...args);
+  },
+  warn(title: string, ...args: any[]): void {
+    const textStyle = "color:#FFA62F;font-weight:bold;";
+    console.log(`%c >>> ${title}: `, textStyle, ...args);
+  },
+  success(title: string, ...args: any[]): void {
+    const textStyle = "color:#41B06E;font-weight:bold;";
+    console.log(`%c >>> ${title}: `, textStyle, ...args);
+  },
+  error(title: string, ...args: any[]): void {
+    const textStyle = "color:#DD5746;font-weight:bold;";
+    console.log(`%c >>> ${title}: `, textStyle, ...args);
+  },
+};
+
+function createLog(): ILog {
+  const log: any = (title: string, ...args: any[]) => {
+    Logs.info(title, ...args);
+  };
+
+  Object.getOwnPropertyNames(Logs).forEach((key) => {
+    log[key] = (Logs as any)[key].bind(Logs);
+  });
+
+  return log as ILog;
+}
+
+export const stLog = createLog();

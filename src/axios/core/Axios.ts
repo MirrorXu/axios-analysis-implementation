@@ -46,10 +46,10 @@ export default class Axios {
     ];
     // chain =  [ ...requestInterceptor , { resolve:dispatchRequest , reject:undefined }  , ... responseInterceptor  }]
     this.interceptors.request.forEach((interceptor) => {
-      chain.unshift(interceptor);
+      chain.unshift(interceptor); // 请求拦截器，先添加的后执行
     });
     this.interceptors.response.forEach((interceptor) => {
-      chain.push(interceptor);
+      chain.push(interceptor); // 响应拦截器，先添加的先执行
     });
 
     let promise = Promise.resolve(config);

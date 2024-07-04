@@ -1,32 +1,65 @@
 const express = require("express");
-const chalk = require("chalk");
-const cors = require("cors");
+const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
+const chalk = require("chalk");
 
 const app = express();
 const port = 3000;
 // 解析 URL 编码的请求体
-app.use(bodyParser.urlencoded({ extended: true }));
-// parse application/json
 app.use(bodyParser.json());
-
-app.use(cors());
-
-app.get("/user", (req, res) => {
-  console.log("req:", req.query);
-  res.send({ name: "张三", ...req.query });
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
+const cors = require("cors");
+const myCors = cors({
+  origin: true,
+  credentials: true,
+  // methods: ["GET", "POST", "PUT", "PATCH"],
 });
+console.log(myCors);
+app.use(myCors);
+
 app.post("/login", (req, res) => {
-  console.log(chalk.red("### req.body:"), req.body);
-  const body = req.body || {};
-  res.send({
+  console.log(chalk.green(`${req.hostname}${req.url}`));
+
+  console.log(chalk.red("req.body:"), req.body);
+  console.log(chalk.red("req.cookies:"), req.cookies);
+  res.cookie("token", 123);
+  const reqBody = req.body;
+  const sendData = {
     msg: "success",
     code: 200,
     data: {
-      ...body,
+      ...reqBody,
     },
-  });
+  };
+  res.send(sendData);
 });
+
+app.get("/user", (req, res) => {
+  console.log(chalk.green(`${req.hostname}${req.url}`));
+  console.log(chalk.red("req.cookies:"), req.cookies);
+  // res.cookie("token", 456);
+  res.cookie();
+
+  const headers = req.headers;
+  console.log(chalk.red("req.headers:"), headers);
+  res.type("json");
+  res.json({ name: "张三", ...req.query });
+
+  // if (headers.accept.includes("text/html; charset=UTF-8")) {
+  //   res.type("html");
+  //   res.send(` <h1 id="aaa">${JSON.stringify(req.query)}</h1>`);
+  // } else if (headers.accept.includes("json")) {
+  //   res.type("json");
+  //   res.json({ name: "张三", ...req.query });
+  // }
+});
+
+// app.post("/user", (req, res) => {
+//   console.log(req.url);
+//   console.log("req:", req.query);
+//   res.send({ name: "张三", ...req.query });
+// });
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

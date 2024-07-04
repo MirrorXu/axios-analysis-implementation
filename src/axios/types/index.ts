@@ -16,6 +16,8 @@ export interface AxiosRequestConfig {
   timeout?: number; //超时时间  毫秒
   transformRequest?: AxiosTransFormer | AxiosTransFormer[];
   transformResponse?: AxiosTransFormer | AxiosTransFormer[];
+  cancelToken?: CancelToken;
+  withCredentials?: boolean;
   [propName: string]: any;
 }
 
@@ -78,9 +80,6 @@ export interface Axios {
   ): AxiosPromise<T>;
 }
 
-/**
- * axios的类型
- */
 export interface AxiosInstance extends Axios {
   <T = any>(config: AxiosRequestConfig): AxiosPromise<T>;
   <T = any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T>;
@@ -88,6 +87,9 @@ export interface AxiosInstance extends Axios {
 
 export interface AxiosStatic extends AxiosInstance {
   create(config: AxiosRequestConfig): AxiosInstance;
+  CancelToken: CancelTokenStatic;
+  Cancel: CancelStatic;
+  isCancel: (v: any) => boolean;
 }
 
 export interface AxiosInterceptorManager<T> {
@@ -101,4 +103,37 @@ export interface ResolvedFn<T> {
 
 export interface RejectedFn {
   (err: any): any;
+}
+
+// 取消网络请求
+export interface CancelToken {
+  promise: Promise<Cancel>;
+  reason?: Cancel;
+  throwIfRequested(): void;
+}
+
+export interface Canceler {
+  (message?: string): void;
+}
+
+export interface CancelExecutor {
+  (cancel: Canceler): void;
+}
+
+export interface CancelTokenSource {
+  token: CancelToken;
+  cancel: Canceler;
+}
+export interface CancelTokenStatic {
+  new (executor: CancelExecutor): CancelToken;
+  source(): CancelTokenSource;
+  // source: () => CancelTokenSource;
+}
+
+export interface Cancel {
+  message: string;
+}
+
+export interface CancelStatic {
+  new (message?: string): Cancel;
 }
