@@ -1,4 +1,6 @@
 // import "./common";
 // import "./cancel";
 
-import "./withCredentials";
+// import "./withCredentials";
+
+import "./xsrf";

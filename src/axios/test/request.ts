@@ -26,6 +26,8 @@ const request: AxiosInstance = axios.create({
     },
     ...(axios.defaults.transformRequest as AxiosTransFormer[]),
   ],
+  xsrfCookieName: "x-token",
+  xsrfHeaderName: "x-token",
 });
 
 // 公共请求头配置

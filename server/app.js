@@ -17,13 +17,13 @@ const myCors = cors({
 });
 console.log(myCors);
 app.use(myCors);
-
+const TokenName = "x-token";
 app.post("/login", (req, res) => {
   console.log(chalk.green(`${req.hostname}${req.url}`));
 
   console.log(chalk.red("req.body:"), req.body);
-  console.log(chalk.red("req.cookies:"), req.cookies);
-  res.cookie("token", 123);
+  console.log(chalk.red("req.cookies:"), JSON.stringify(req.cookies));
+  res.cookie(TokenName, "user_1232343");
   const reqBody = req.body;
   const sendData = {
     msg: "success",
@@ -37,15 +37,17 @@ app.post("/login", (req, res) => {
 
 app.get("/user", (req, res) => {
   console.log(chalk.green(`${req.hostname}${req.url}`));
-  console.log(chalk.red("req.cookies:"), req.cookies);
-  // res.cookie("token", 456);
-  res.cookie();
 
+  // res.cookie("token", 456);
+  const cookies = req.cookies;
   const headers = req.headers;
   console.log(chalk.red("req.headers:"), headers);
-  res.type("json");
-  res.json({ name: "张三", ...req.query });
-
+  console.log(chalk.red("req.cookies:"), req.cookies);
+  if (headers[TokenName]) {
+    res.json({ name: "张三", ...req.query });
+  } else {
+    res.status(400).json({ message: "token无效" });
+  }
   // if (headers.accept.includes("text/html; charset=UTF-8")) {
   //   res.type("html");
   //   res.send(` <h1 id="aaa">${JSON.stringify(req.query)}</h1>`);

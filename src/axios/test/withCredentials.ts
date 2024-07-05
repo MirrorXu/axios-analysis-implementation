@@ -6,7 +6,6 @@ interface User {
 }
 
 // 设置cookie
-document.cookie = "test=123";
 // 发起请求
 stLog("request", request);
 request
@@ -18,11 +17,9 @@ request
     },
     {
       withCredentials: true,
-      responseType: "text",
-      // contentType: "text/plain",
-      headers: {
-        "content-type": "application/octet-stream",
-      },
+      responseType: "json",
+      // xsrfHeaderName: "X-TOKEN",  // 已通过axios.create创建实例时配置，这里可以注释
+      // xsrfCookieName: "X-TOKEN",  // 已通过axios.create创建实例时配置，这里可以注释
     }
   )
   .then((res) => {

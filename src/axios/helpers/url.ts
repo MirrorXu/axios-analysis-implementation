@@ -52,3 +52,20 @@ export function buildURL(url: string, params?: any): string {
 
   return url;
 }
+
+export function isSameOrigin(requestURL: string): boolean {
+  const { protocol, host } = resolveURL(requestURL);
+  const { protocol: currentProtocol, host: currentHost } = resolveURL(
+    location.href
+  );
+  return protocol === currentProtocol && host === currentHost;
+}
+function resolveURL(url: string) {
+  const a = document.createElement("a");
+  a.setAttribute("href", url);
+  const { protocol, host } = a;
+  return {
+    protocol,
+    host,
+  };
+}

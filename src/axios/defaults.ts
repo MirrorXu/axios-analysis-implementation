@@ -25,6 +25,8 @@ export const defaultsRequestConfig: AxiosRequestConfig = {
       return data;
     },
   ],
+  xsrfCookieName: "XSRF-TOKEN",
+  xsrfHeaderName: "X-XSRF-TOKEN",
 };
 
 const methodsData = ["delete", "get", "head", "options"];

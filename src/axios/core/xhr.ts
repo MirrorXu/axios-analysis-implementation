@@ -2,6 +2,8 @@ import { AxiosPromise, AxiosRequestConfig, AxiosResponse } from "@/axios/types";
 import { parseHeaders } from "@/axios/helpers/headers";
 import { createError } from "@/axios/helpers/error";
 import { stLog } from "@/axios/helpers/utils";
+import { isSameOrigin } from "@/axios/helpers/url";
+import cookie from "@/axios/helpers/cookie";
 
 export default function xhr<T = any>(
   config: AxiosRequestConfig
@@ -16,12 +18,15 @@ export default function xhr<T = any>(
       timeout,
       cancelToken,
       withCredentials,
+      xsrfCookieName,
+      xsrfHeaderName,
     } = config;
     // XMLHttpRequest对象：https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest/XMLHttpRequest
 
     const request = new XMLHttpRequest();
     stLog.warn("readyState-after new XMLHttpRequest ", request.readyState);
 
+    // 设置responseType, 浏览器根据不同的responseType会对响应内容做不同的处理
     if (responseType) {
       request.responseType = responseType;
     }
@@ -35,11 +40,6 @@ export default function xhr<T = any>(
     }
     request.open(method.toUpperCase(), url!, true);
     stLog.warn("readyState-after open", request.readyState);
-    // 设置请求头
-    stLog("request.setRequestHeader(key , value)", headers);
-    Object.keys(headers).forEach((name) => {
-      request.setRequestHeader(name, headers[name]);
-    });
 
     // 服务端成功响应
     request.onreadystatechange = function handleReadyStateChange() {
@@ -104,6 +104,23 @@ export default function xhr<T = any>(
       );
       reject(error);
     };
+
+    // xsrf防御功能
+    if (
+      (withCredentials || isSameOrigin(url!)) &&
+      xsrfCookieName &&
+      xsrfHeaderName
+    ) {
+      const xsrfValue = cookie.read(xsrfCookieName);
+      if (xsrfValue) {
+        headers[xsrfHeaderName] = xsrfValue;
+      }
+    }
+    // 设置请求头
+    stLog("headers", headers);
+    Object.keys(headers).forEach((name) => {
+      request.setRequestHeader(name, headers[name]);
+    });
 
     if (cancelToken) {
       stLog("cancelToken, request.abort", cancelToken);
