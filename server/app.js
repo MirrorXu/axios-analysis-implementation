@@ -63,6 +63,24 @@ app.get("/user", (req, res) => {
 //   res.send({ name: "张三", ...req.query });
 // });
 
+app.post("/auth", (req, res) => {
+  const { authorization } = req.headers;
+  const [a, encodeData] = authorization.split(" ");
+  const [username, password] = atob(encodeData).split(":");
+  console.log(username, password);
+  if (username === "Mirror" && password === "123456") {
+    res.send({
+      message: "success",
+      code: 200,
+      data: {
+        username,
+        password,
+      },
+    });
+  } else {
+    res.status(401).json({ message: "未授权" });
+  }
+});
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });

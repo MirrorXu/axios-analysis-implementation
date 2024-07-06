@@ -25,8 +25,13 @@ export const defaultsRequestConfig: AxiosRequestConfig = {
       return data;
     },
   ],
+  // xsrf配置被实例替换
   xsrfCookieName: "XSRF-TOKEN",
   xsrfHeaderName: "X-XSRF-TOKEN",
+  // 校验http状态码
+  validateStatus(httpStatus) {
+    return httpStatus >= 200 && httpStatus < 300;
+  },
 };
 
 const methodsData = ["delete", "get", "head", "options"];

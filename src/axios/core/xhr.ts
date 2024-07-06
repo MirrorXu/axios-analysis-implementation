@@ -22,6 +22,8 @@ export default function xhr<T = any>(
       xsrfHeaderName,
       onDownloadProgress,
       onUploadProgress,
+      auth,
+      validateStatus,
     } = config;
 
     // XMLHttpRequest对象：https://developer.mozilla.org/zh-CN/docs/Web/API/XMLHttpRequest/XMLHttpRequest
@@ -93,7 +95,7 @@ export default function xhr<T = any>(
         };
 
         // handle request.status
-        if (response.status >= 200 && response.status < 300) {
+        if (!validateStatus || validateStatus(request.status)) {
           resolve(response);
         } else {
           reject(
@@ -150,6 +152,12 @@ export default function xhr<T = any>(
         if (xsrfValue) {
           headers[xsrfHeaderName] = xsrfValue;
         }
+      }
+      // 根据auth配置，配置请求头 Authorization
+      if (auth) {
+        headers["Authorization"] = `Basic ${btoa(
+          auth.username + ":" + auth.password
+        )}`;
       }
       // 设置请求头
       stLog("headers", headers);

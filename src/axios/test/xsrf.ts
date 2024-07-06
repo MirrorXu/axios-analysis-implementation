@@ -48,6 +48,5 @@ request
     stLog.success("success", res);
   })
   .catch((err) => {
-    debugger;
     stLog("error", err);
   });

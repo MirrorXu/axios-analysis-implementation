@@ -38,6 +38,7 @@ function deepMergeStrat(val1: any, val2: any) {
 let strats = Object.create(null);
 strats = {
   headers: deepMergeStrat,
+  auth: deepMergeStrat,
   url: fromVal2Strat,
   params: fromVal2Strat,
   data: fromVal2Strat,

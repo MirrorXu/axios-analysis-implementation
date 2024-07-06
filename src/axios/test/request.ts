@@ -3,8 +3,6 @@ import { AxiosInstance, AxiosTransFormer } from "@/axios/types";
 import { isPlainObject } from "@/axios/helpers/utils";
 import qs from "qs";
 
-const Host = "http://localhost:3000";
-
 // 创建Axios实例
 const request: AxiosInstance = axios.create({
   headers: {
@@ -28,6 +26,9 @@ const request: AxiosInstance = axios.create({
   ],
   xsrfCookieName: "x-token",
   xsrfHeaderName: "x-token",
+  validateStatus(httpStatus) {
+    return httpStatus >= 200 && httpStatus < 300;
+  },
 });
 
 // 公共请求头配置
@@ -55,3 +56,5 @@ request.interceptors.response.use((response) => {
 }, undefined);
 
 export default request;
+
+export const Host = "http://localhost:3000";

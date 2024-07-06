@@ -3,6 +3,10 @@ export type Method = "get" | "post" | "put" | "patch" | "delete";
 export interface AxiosTransFormer {
   (data: any, headers?: any): any;
 }
+export interface AxiosBasicCredentials {
+  username: string;
+  password: string;
+}
 /**
  * axios 请求参数对象
  */
@@ -22,6 +26,8 @@ export interface AxiosRequestConfig {
   xsrfHeaderName?: string;
   onUploadProgress?: (e: ProgressEvent) => void;
   onDownloadProgress?: (e: ProgressEvent) => void;
+  auth?: AxiosBasicCredentials;
+  validateStatus?: (httpStatus: number) => boolean; // 校验http状态码
   [propName: string]: any;
 }
 
