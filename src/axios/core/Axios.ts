@@ -44,7 +44,7 @@ export default class Axios {
         rejected: undefined,
       },
     ];
-    // chain =  [ ...requestInterceptor , { resolve:dispatchRequest , reject:undefined }  , ... responseInterceptor  }]
+    // chain =  [ ...( requestInterceptors.reverse() ), { resolve:dispatchRequest , reject:undefined }  , ... responseInterceptors  }]
     this.interceptors.request.forEach((interceptor) => {
       chain.unshift(interceptor); // 请求拦截器，先添加的后执行
     });

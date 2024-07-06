@@ -1,4 +1,9 @@
-import { isDate, isPlainObject } from "@/axios/helpers/utils";
+import {
+  isDate,
+  isFunction,
+  isPlainObject,
+  isURLSearchParams,
+} from "@/axios/helpers/utils";
 
 function encode(val: string): string {
   return encodeURIComponent(val)
@@ -12,36 +17,45 @@ function encode(val: string): string {
     .replace(/%5D/gi, "]");
 }
 
-export function buildURL(url: string, params?: any): string {
-  if (!params || !isPlainObject(params)) return url;
-  const parts: string[] = [];
+export function buildURL(
+  url: string,
+  params?: any,
+  paramsSerializer?: (params: any) => string
+): string {
+  if (!params) return url;
+  let serializedParams: string; // 序列化后的params
+  if (paramsSerializer && isFunction(paramsSerializer)) {
+    serializedParams = paramsSerializer(params);
+  } else if (isURLSearchParams(params)) {
+    serializedParams = params.toString();
+  } else {
+    const parts: string[] = [];
+    Object.keys(params).forEach((key: string) => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //@ts-ignore
+      const value = params[key];
+      if (value == null) return;
 
-  Object.keys(params).forEach((key: string) => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //@ts-ignore
-    const value = params[key];
-    if (value == null) return;
-
-    let values = [];
-    if (Array.isArray(value)) {
-      values = value;
-      key += "[]";
-    } else {
-      values = [value];
-    }
-
-    values.forEach((value) => {
-      if (isDate(value)) {
-        value = value.toISOString();
-      } else if (isPlainObject(value)) {
-        value = JSON.stringify(value);
+      let values = [];
+      if (Array.isArray(value)) {
+        values = value;
+        key += "[]";
+      } else {
+        values = [value];
       }
-      const part = `${encode(key)}=${encode(value)}`;
-      parts.push(part);
-    });
-  });
 
-  const serializedParams = parts.join("&");
+      values.forEach((value) => {
+        if (isDate(value)) {
+          value = value.toISOString();
+        } else if (isPlainObject(value)) {
+          value = JSON.stringify(value);
+        }
+        const part = `${encode(key)}=${encode(value)}`;
+        parts.push(part);
+      });
+    });
+    serializedParams = parts.join("&");
+  }
   if (serializedParams) {
     const marIndex = url.indexOf("#");
     if (marIndex > -1) {

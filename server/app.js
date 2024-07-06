@@ -57,11 +57,11 @@ app.get("/user", (req, res) => {
   // }
 });
 
-// app.post("/user", (req, res) => {
-//   console.log(req.url);
-//   console.log("req:", req.query);
-//   res.send({ name: "张三", ...req.query });
-// });
+app.get("/data", (req, res) => {
+  console.log(req.url);
+  console.log("req:", req.query);
+  res.send({ ...req.query });
+});
 
 app.post("/auth", (req, res) => {
   const { authorization } = req.headers;

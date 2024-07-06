@@ -16,8 +16,8 @@ function processConfig(config: AxiosRequestConfig) {
 
 // 处理url ， get请求的 params对象拼接到url上
 function transformURL(config: AxiosRequestConfig): string {
-  const { url, params } = config;
-  const retUrl = buildURL(url as string, params);
+  const { url, params, paramsSerializer } = config;
+  const retUrl = buildURL(url as string, params, paramsSerializer);
   return retUrl;
 }
 
