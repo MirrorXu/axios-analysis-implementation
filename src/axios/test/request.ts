@@ -2,6 +2,7 @@ import axios from "@/axios/index";
 import { AxiosInstance, AxiosTransFormer } from "@/axios/types";
 import { isPlainObject } from "@/axios/helpers/utils";
 import qs from "qs";
+export const Host = "http://localhost:3000";
 
 // 创建Axios实例
 const request: AxiosInstance = axios.create({
@@ -29,6 +30,7 @@ const request: AxiosInstance = axios.create({
   validateStatus(httpStatus) {
     return httpStatus >= 200 && httpStatus < 300;
   },
+  baseURL: Host,
 });
 
 // 公共请求头配置
@@ -56,5 +58,3 @@ request.interceptors.response.use((response) => {
 }, undefined);
 
 export default request;
-
-export const Host = "http://localhost:3000";

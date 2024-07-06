@@ -83,3 +83,12 @@ function resolveURL(url: string) {
     host,
   };
 }
+
+export function isAbsoluteURL(url: string): boolean {
+  const reg = /^([a-z][a-z\d+-.]*:)?\/\//i;
+  return reg.test(url);
+}
+
+export function combineURL(baseURL: string, relativeURL?: string): string {
+  return baseURL + relativeURL;
+}

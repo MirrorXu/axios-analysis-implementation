@@ -8,4 +8,6 @@
 // import "./auth";
 // import "./validateStatus";
 
-import "./paramsSeriallizer";
+// import "./paramsSeriallizer";
+
+import "./baseURL";
