@@ -1,5 +1,4 @@
 # axios 的源码分析与实现 （使用TypeScript）
-
 ## 介绍
 - 本项目参考的axios，实现了axios在web端的大部分的设计思路和能力。
 - 使用了@vue/cli为项目脚手架搭建开发调试环境。 
@@ -20,8 +19,9 @@
 
 
 ## axios源码模块介绍
-```bash
+[axios源码目录](https://github.com/MirrorXu/axios-analysis-implementation/tree/main/src/axios)
 
+```bash
 ├── readme.md  
 ├── index.ts   # 模块到处（入口）
 ├── types
